@@ -522,6 +522,23 @@ const ValtioExample = () => {
           </Text>
         </View>
 
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>🔄 ¿Cuándo usar Valtio?</Text>
+          <Text style={styles.infoText}>
+            • Cuando quieres escribir código como objetos JavaScript normales{'\n'}
+            • Apps con estado complejo anidado (objetos dentro de objetos){'\n'}
+            • Proyectos que migran desde MobX o Vue{'\n'}
+            • Equipos familiarizados con programación imperativa
+          </Text>
+          
+          <Text style={styles.infoTitle}>⚙️ ¿Cómo funciona?</Text>
+          <Text style={styles.infoText}>
+            Usa Proxies de JavaScript para interceptar mutaciones al estado. 
+            Los getters crean valores computados automáticamente. useSnapshot() 
+            devuelve versiones inmutables para React. Detecta cambios automáticamente.
+          </Text>
+        </View>
+
         <CounterSection />
         <UserSection />
         <CartSection />
@@ -681,6 +698,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     lineHeight: 24,
+  },
+  infoSection: {
+    backgroundColor: '#fff0f0',
+    margin: 10,
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FF6B6B',
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#cc0000',
+    marginBottom: 8,
+    marginTop: 8,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#cc0000',
+    lineHeight: 20,
+    marginBottom: 8,
   },
   section: {
     backgroundColor: '#fff',

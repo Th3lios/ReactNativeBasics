@@ -24,10 +24,13 @@ import TextExample from './src/screens/components/TextExample';
 import TextInputExample from './src/screens/components/TextInputExample';
 import ScrollViewExample from './src/screens/components/ScrollViewExample';
 import FlatListExample from './src/screens/components/FlatListExample';
+import SectionListExample from './src/screens/components/SectionListExample';
 import ButtonExample from './src/screens/components/ButtonExample';
 import PressableExample from './src/screens/components/PressableExample';
 import TouchableOpacityExample from './src/screens/components/TouchableOpacityExample';
 import TouchableHighlightExample from './src/screens/components/TouchableHighlightExample';
+import SwitchExample from './src/screens/components/SwitchExample';
+import ActivityIndicatorExample from './src/screens/components/ActivityIndicatorExample';
 import ModalExample from './src/screens/components/ModalExample';
 import ImageExample from './src/screens/components/ImageExample';
 
@@ -56,6 +59,7 @@ import FormikAdvancedExample from './src/screens/libraries/forms/FormikAdvancedE
 
 // Import state management examples
 import ReduxToolkitExample from './src/screens/libraries/state/ReduxToolkitExample';
+import ReduxSagasExample from './src/screens/libraries/state/ReduxSagasExample';
 import ZustandExample from './src/screens/libraries/state/ZustandExample';
 import ContextAPIExample from './src/screens/libraries/state/ContextAPIExample';
 import JotaiExample from './src/screens/libraries/state/JotaiExample';
@@ -77,6 +81,28 @@ import ModalBottomSheetExample from './src/screens/libraries/bottomsheet/ModalBo
 
 // Import utilities
 import UtilitiesHomeScreen from './src/screens/libraries/utilities/UtilitiesHomeScreen';
+
+// Import architecture examples
+import ArchitectureHomeScreen from './src/screens/architecture/ArchitectureHomeScreen';
+import BasicStructureExample from './src/screens/architecture/BasicStructureExample';
+import FolderStructuresExample from './src/screens/architecture/FolderStructuresExample';
+
+// Import flows examples
+import FlowsHomeScreen from './src/screens/flows/FlowsHomeScreen';
+import ApiFlowsExample from './src/screens/flows/ApiFlowsExample';
+import StateFlowsExample from './src/screens/flows/StateFlowsExample';
+
+// Import patterns examples
+import PatternsHomeScreen from './src/screens/patterns/PatternsHomeScreen';
+import ComponentPatternsExample from './src/screens/patterns/ComponentPatternsExample';
+import HOCPatternsExample from './src/screens/patterns/HOCPatternsExample';
+import StatePatternsExample from './src/screens/patterns/StatePatternsExample';
+import PerformancePatternsExample from './src/screens/patterns/PerformancePatternsExample';
+import HookPatternsExample from './src/screens/patterns/HookPatternsExample';
+import RNSpecificPatternsExample from './src/screens/patterns/RNSpecificPatternsExample';
+
+// Import comparison examples
+import ComparisonHomeScreen from './src/screens/comparison/ComparisonHomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -138,6 +164,11 @@ function App() {
             options={{ title: 'FlatList Component' }}
           />
           <Stack.Screen 
+            name="SectionListExample" 
+            component={SectionListExample} 
+            options={{ title: 'SectionList Component' }}
+          />
+          <Stack.Screen 
             name="ButtonExample" 
             component={ButtonExample} 
             options={{ title: 'Button Component' }}
@@ -156,6 +187,16 @@ function App() {
             name="TouchableHighlightExample" 
             component={TouchableHighlightExample} 
             options={{ title: 'TouchableHighlight Component' }}
+          />
+          <Stack.Screen 
+            name="SwitchExample" 
+            component={SwitchExample} 
+            options={{ title: 'Switch Component' }}
+          />
+          <Stack.Screen 
+            name="ActivityIndicatorExample" 
+            component={ActivityIndicatorExample} 
+            options={{ title: 'ActivityIndicator Component' }}
           />
           <Stack.Screen 
             name="ModalExample" 
@@ -232,6 +273,11 @@ function App() {
             name="redux-toolkitExample" 
             component={ReduxToolkitExample} 
             options={{ title: 'Redux Toolkit' }}
+          />
+          <Stack.Screen 
+            name="redux-sagasExample" 
+            component={ReduxSagasExample} 
+            options={{ title: 'Redux Sagas' }}
           />
           <Stack.Screen 
             name="zustandExample" 
@@ -373,57 +419,191 @@ function App() {
           
 
           
+          {/* Architecture Section */}
           <Stack.Screen 
             name="ArchitectureHome" 
-            options={{ title: 'Arquitectura de Proyectos' }}>
-            {(props) => (
-              <PlaceholderScreen 
-                {...props}
-                title="Arquitectura de Proyectos"
-                description="Estructuras y patrones de organización"
-                icon="🏗️"
-              />
-            )}
-          </Stack.Screen>
-          
+            component={ArchitectureHomeScreen}
+            options={{ title: 'Estructuras de Proyectos' }}
+          />
           <Stack.Screen 
-            name="WorkflowsHome" 
-            options={{ title: 'Flujos de Desarrollo' }}>
-            {(props) => (
-              <PlaceholderScreen 
-                {...props}
-                title="Flujos de Desarrollo"
-                description="CI/CD, testing, debugging"
-                icon="⚙️"
-              />
-            )}
-          </Stack.Screen>
-          
+            name="BasicStructureExample" 
+            component={BasicStructureExample}
+            options={{ title: 'Estructura Básica por Tipos' }}
+          />
           <Stack.Screen 
-            name="PatternsHome" 
-            options={{ title: 'Patrones Comunes' }}>
+            name="FeatureStructureExample" 
+            options={{ title: 'Estructura por Features' }}>
             {(props) => (
               <PlaceholderScreen 
                 {...props}
-                title="Patrones Comunes"
-                description="Patrones de diseño y mejores prácticas"
+                title="Estructura por Features"
+                description="Organización por funcionalidades del negocio"
                 icon="🎯"
               />
             )}
           </Stack.Screen>
-          
           <Stack.Screen 
-            name="ComparisonHome" 
-            options={{ title: 'Vue 3 vs React Native' }}>
+            name="AtomicStructureExample" 
+            options={{ title: 'Atomic Design Structure' }}>
             {(props) => (
               <PlaceholderScreen 
                 {...props}
-                title="Vue 3 vs React Native"
-                description="Comparación de frameworks"
-                icon="⚖️"
+                title="Atomic Design Structure"
+                description="Estructura basada en componentes atómicos"
+                icon="⚛️"
               />
             )}
           </Stack.Screen>
+          <Stack.Screen 
+            name="DomainStructureExample" 
+            options={{ title: 'Domain-Driven Structure' }}>
+            {(props) => (
+              <PlaceholderScreen 
+                {...props}
+                title="Domain-Driven Structure"
+                description="Organización basada en dominios del negocio"
+                icon="🏛️"
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen 
+            name="LayeredStructureExample" 
+            options={{ title: 'Estructura en Capas' }}>
+            {(props) => (
+              <PlaceholderScreen 
+                {...props}
+                title="Estructura en Capas"
+                description="Organización por capas de responsabilidad"
+                icon="🏗️"
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen 
+            name="ModularStructureExample" 
+            options={{ title: 'Estructura Modular' }}>
+            {(props) => (
+              <PlaceholderScreen 
+                {...props}
+                title="Estructura Modular"
+                description="Módulos independientes y reutilizables"
+                icon="🧩"
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen 
+            name="FolderStructuresExample" 
+            component={FolderStructuresExample}
+            options={{ title: 'Comparación de Estructuras' }}
+          />
+          
+          {/* Flows Section */}
+          <Stack.Screen 
+            name="WorkflowsHome" 
+            component={FlowsHomeScreen}
+            options={{ title: 'Flujos de Desarrollo' }}
+          />
+          <Stack.Screen 
+            name="ApiFlowsExample" 
+            component={ApiFlowsExample}
+            options={{ title: 'Flujos de API' }}
+          />
+          <Stack.Screen 
+            name="StateFlowsExample" 
+            component={StateFlowsExample}
+            options={{ title: 'Flujos de Estado' }}
+          />
+          <Stack.Screen 
+            name="FormFlowsExample" 
+            options={{ title: 'Flujos de Formularios' }}>
+            {(props) => (
+              <PlaceholderScreen 
+                {...props}
+                title="Flujos de Formularios"
+                description="Validación, envío y manejo de formularios"
+                icon="📝"
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen 
+            name="NavigationFlowsExample" 
+            options={{ title: 'Flujos de Navegación' }}>
+            {(props) => (
+              <PlaceholderScreen 
+                {...props}
+                title="Flujos de Navegación"
+                description="Paso de datos entre pantallas y deep linking"
+                icon="🧭"
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen 
+            name="AuthFlowsExample" 
+            options={{ title: 'Flujos de Autenticación' }}>
+            {(props) => (
+              <PlaceholderScreen 
+                {...props}
+                title="Flujos de Autenticación"
+                description="Login, logout, protección de rutas y tokens"
+                icon="🔐"
+              />
+            )}
+          </Stack.Screen>
+          <Stack.Screen 
+            name="RealtimeFlowsExample" 
+            options={{ title: 'Flujos en Tiempo Real' }}>
+            {(props) => (
+              <PlaceholderScreen 
+                {...props}
+                title="Flujos en Tiempo Real"
+                description="WebSockets, notificaciones y updates live"
+                icon="⚡"
+              />
+            )}
+          </Stack.Screen>
+          
+          {/* Patterns Section */}
+          <Stack.Screen 
+            name="PatternsHome" 
+            component={PatternsHomeScreen}
+            options={{ title: 'Patrones Comunes' }}
+          />
+          <Stack.Screen 
+            name="ComponentPatternsExample" 
+            component={ComponentPatternsExample}
+            options={{ title: 'Patrones de Componentes' }}
+          />
+          <Stack.Screen 
+            name="HOCPatternsExample" 
+            component={HOCPatternsExample}
+            options={{ title: 'Higher-Order Components' }}
+          />
+          <Stack.Screen 
+            name="StatePatternsExample" 
+            component={StatePatternsExample}
+            options={{ title: 'Patrones de Estado' }}
+          />
+          <Stack.Screen 
+            name="PerformancePatternsExample" 
+            component={PerformancePatternsExample}
+            options={{ title: 'Patrones de Performance' }}
+          />
+          <Stack.Screen 
+            name="HookPatternsExample" 
+            component={HookPatternsExample}
+            options={{ title: 'Patrones de Hooks' }}
+          />
+          <Stack.Screen 
+            name="RNSpecificPatternsExample" 
+            component={RNSpecificPatternsExample}
+            options={{ title: 'Patrones React Native' }}
+          />
+          
+          {/* Comparison Section */}
+          <Stack.Screen 
+            name="ComparisonHome" 
+            component={ComparisonHomeScreen}
+            options={{ title: 'Vue 3 vs React Native' }}
+          />
           
         </Stack.Navigator>
       </NavigationContainer>

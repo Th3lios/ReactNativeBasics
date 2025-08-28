@@ -286,6 +286,23 @@ const JotaiExample = () => {
           </Text>
         </View>
 
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>⚛️ ¿Cuándo usar Jotai?</Text>
+          <Text style={styles.infoText}>
+            • Apps que necesitan estado granular y optimizaciones automáticas{'\n'}
+            • Cuando quieres componer estado complejo desde piezas pequeñas{'\n'}
+            • Proyectos con mucho estado derivado/computado{'\n'}
+            • Equipos que prefieren bottom-up sobre top-down design
+          </Text>
+          
+          <Text style={styles.infoTitle}>⚙️ ¿Cómo funciona?</Text>
+          <Text style={styles.infoText}>
+            Crea "atoms" (piezas de estado) que se pueden leer, escribir y combinar. 
+            Los derived atoms se recalculan automáticamente. React Suspense maneja 
+            estados async. Solo re-renderiza componentes que usan atoms específicos.
+          </Text>
+        </View>
+
         <CounterSection />
         <NameSection />
         <WeatherSection />
@@ -407,6 +424,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     lineHeight: 24,
+  },
+  infoSection: {
+    backgroundColor: '#e8f6f3',
+    margin: 10,
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#007ACC',
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007ACC',
+    marginBottom: 8,
+    marginTop: 8,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#007ACC',
+    lineHeight: 20,
+    marginBottom: 8,
   },
   section: {
     backgroundColor: '#fff',

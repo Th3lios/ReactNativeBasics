@@ -9,9 +9,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useCounterStore } from '../../../store/zustand/counterStore';
-import { useTodoStore } from '../../../store/zustand/todoStore';
-import { useUserStore } from '../../../store/zustand/userStore';
+import { useCounterStore } from '../../../store/zustand/counterStoreSimple';
+import { useTodoStore } from '../../../store/zustand/todoStoreSimple';
+import { useUserStore } from '../../../store/zustand/userStoreSimple';
 
 // Counter Section with Persistence
 const CounterSection = () => {
@@ -37,7 +37,7 @@ const CounterSection = () => {
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>🐻 Zustand Counter (Persisted)</Text>
+      <Text style={styles.sectionTitle}>🐻 Zustand Counter (Simple)</Text>
       
       <View style={styles.counterContainer}>
         <Text style={styles.counterValue}>Count: {count}</Text>
@@ -83,7 +83,7 @@ const CounterSection = () => {
 
         {history.length > 0 && (
           <View style={styles.historyContainer}>
-            <Text style={styles.historyTitle}>History (Persisted):</Text>
+            <Text style={styles.historyTitle}>History:</Text>
             <Text style={styles.historyText}>
               {history.slice(-5).join(' → ')} → {count}
             </Text>
@@ -114,13 +114,22 @@ const TodosSection = () => {
     markAllCompleted,
     loadTodos,
     addTodoAsync,
-    filteredTodos,
-    stats,
   } = useTodoStore();
   
+  // Compute values directly from state to avoid selector issues
+  const currentStats = {
+    total: todos.length,
+    active: todos.filter(todo => !todo.completed).length,
+    completed: todos.filter(todo => todo.completed).length,
+  };
+  
+  const currentFilteredTodos = todos.filter(todo => {
+    if (filter === 'active') return !todo.completed;
+    if (filter === 'completed') return todo.completed;
+    return true;
+  });
+  
   const [newTodoText, setNewTodoText] = useState('');
-  const currentStats = stats();
-  const currentFilteredTodos = filteredTodos();
 
   useEffect(() => {
     if (todos.length === 0) {
@@ -267,12 +276,23 @@ const UsersSection = () => {
     setSortBy,
     fetchUsers,
     updateUserAsync,
-    filteredUsers,
-    userCount,
-    activeUserCount,
   } = useUserStore();
 
-  const currentFilteredUsers = filteredUsers();
+  // Compute values directly from state to avoid selector issues
+  const filteredUsers = users
+    .filter(user =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name);
+      if (sortBy === 'email') return a.email.localeCompare(b.email);
+      if (sortBy === 'status') return Number(b.isActive) - Number(a.isActive);
+      return 0;
+    });
+  
+  const userCount = users.length;
+  const activeUserCount = users.filter(user => user.isActive).length;
 
   useEffect(() => {
     if (users.length === 0) {
@@ -290,7 +310,7 @@ const UsersSection = () => {
 
       <View style={styles.userStats}>
         <Text style={styles.statsText}>
-          Total Users: {userCount()} | Active: {activeUserCount()}
+          Total Users: {userCount} | Active: {activeUserCount}
         </Text>
       </View>
 
@@ -330,7 +350,7 @@ const UsersSection = () => {
         </View>
       ) : (
         <View style={styles.usersContainer}>
-          {currentFilteredUsers.map((user) => (
+          {filteredUsers.map((user) => (
             <Pressable
               key={user.id}
               style={[
@@ -400,6 +420,23 @@ const ZustandExample = () => {
           <Text style={styles.title}>Zustand</Text>
           <Text style={styles.subtitle}>
             State management ligero y simple sin boilerplate
+          </Text>
+        </View>
+
+        <View style={styles.infoSection}>
+          <Text style={styles.infoTitle}>🐻 ¿Cuándo usar Zustand?</Text>
+          <Text style={styles.infoText}>
+            • Apps pequeñas a medianas que quieren simplicidad{'\n'}
+            • Cuando no quieres boilerplate ni providers{'\n'}
+            • Proyectos que necesitan múltiples stores independientes{'\n'}
+            • Equipos que prefieren flexibilidad sobre convenciones estrictas
+          </Text>
+          
+          <Text style={styles.infoTitle}>⚙️ ¿Cómo funciona?</Text>
+          <Text style={styles.infoText}>
+            Crea stores con funciones normales de JavaScript. Los componentes se suscriben 
+            automáticamente usando hooks. Middleware como persist e immer agregan funcionalidades. 
+            No necesita providers - cada store es independiente.
           </Text>
         </View>
 
@@ -517,6 +554,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     lineHeight: 24,
+  },
+  infoSection: {
+    backgroundColor: '#e8f6f3',
+    margin: 10,
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2C3E50',
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    marginBottom: 8,
+    marginTop: 8,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#2C3E50',
+    lineHeight: 20,
+    marginBottom: 8,
   },
   section: {
     backgroundColor: '#fff',

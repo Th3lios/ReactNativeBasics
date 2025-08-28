@@ -6,60 +6,54 @@ import {
   ScrollView,
   Pressable,
   TextInput,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
-import { reduxStore, useAppDispatch, useAppSelector } from '../../../store/redux/store';
+import { sagaStore, useSagaDispatch, useSagaSelector } from '../../../store/redux/sagaStore';
 import {
   increment,
   decrement,
-  incrementByAmount,
   reset,
+  incrementAsync,
   clearHistory,
-} from '../../../store/redux/slices/counterSlice';
+} from '../../../store/redux/slices/counterSagaSlice';
 import {
-  addTodo,
-  toggleTodo,
-  deleteTodo,
+  fetchTodosRequest,
+  addTodoRequest,
+  updateTodoRequest,
+  markAllCompletedRequest,
   setFilter,
-  fetchTodos,
-  addTodoAsync,
-  markAllCompleted,
-  clearCompleted,
-} from '../../../store/redux/slices/todosSlice';
-import {
-  fetchUsers,
-  setSelectedUser,
-  setSearchQuery,
-  updateUserStatus,
-  sortUsers,
-} from '../../../store/redux/slices/usersSlice';
-import {
-  loginUser,
-  logoutUser,
-  checkAuthStatus,
   clearError,
-} from '../../../store/redux/slices/authSlice';
+} from '../../../store/redux/slices/todosSagaSlice';
+import {
+  fetchUsersRequest,
+  updateUserRequest,
+  refreshUsersRequest,
+  setSearchQuery,
+  setSelectedUser,
+} from '../../../store/redux/slices/usersSagaSlice';
+import {
+  fetchWeatherRequest,
+  fetchForecastRequest,
+  refreshAllWeatherRequest,
+  clearWeatherData,
+} from '../../../store/redux/slices/weatherSagaSlice';
 
-// Counter Component
+// Counter Section with Async Saga
 const CounterSection = () => {
-  const dispatch = useAppDispatch();
-  const { value, history, isLoading } = useAppSelector((state) => state.counter);
-  const [customAmount, setCustomAmount] = useState('');
+  const dispatch = useSagaDispatch();
+  const { value, isLoading, history } = useSagaSelector((state) => state.counter);
+  const [amount, setAmount] = useState('5');
 
-  const handleIncrementByAmount = () => {
-    const amount = parseInt(customAmount);
-    if (!isNaN(amount)) {
-      dispatch(incrementByAmount(amount));
-      setCustomAmount('');
-    }
+  const handleAsyncIncrement = () => {
+    const incrementValue = parseInt(amount) || 1;
+    dispatch(incrementAsync(incrementValue));
   };
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>🔢 Counter State</Text>
+      <Text style={styles.sectionTitle}>🌀 Async Counter with Sagas</Text>
       
       <View style={styles.counterContainer}>
         <Text style={styles.counterValue}>Value: {value}</Text>
@@ -69,14 +63,14 @@ const CounterSection = () => {
             style={[styles.button, styles.primaryButton]}
             onPress={() => dispatch(increment())}
           >
-            <Text style={styles.buttonText}>+1</Text>
+            <Text style={styles.buttonText}>+1 Sync</Text>
           </Pressable>
           
           <Pressable
             style={[styles.button, styles.secondaryButton]}
             onPress={() => dispatch(decrement())}
           >
-            <Text style={styles.buttonTextSecondary}>-1</Text>
+            <Text style={styles.buttonTextSecondary}>-1 Sync</Text>
           </Pressable>
           
           <Pressable
@@ -90,16 +84,21 @@ const CounterSection = () => {
         <View style={styles.inputRow}>
           <TextInput
             style={styles.input}
-            placeholder="Custom amount"
-            value={customAmount}
-            onChangeText={setCustomAmount}
+            placeholder="Amount"
+            value={amount}
+            onChangeText={setAmount}
             keyboardType="numeric"
           />
           <Pressable
-            style={[styles.button, styles.primaryButton]}
-            onPress={handleIncrementByAmount}
+            style={[styles.button, styles.sagaButton, isLoading && styles.disabledButton]}
+            onPress={handleAsyncIncrement}
+            disabled={isLoading}
           >
-            <Text style={styles.buttonText}>Add</Text>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>+ Async (Saga)</Text>
+            )}
           </Pressable>
         </View>
 
@@ -113,7 +112,7 @@ const CounterSection = () => {
               style={[styles.button, styles.secondaryButton, styles.smallButton]}
               onPress={() => dispatch(clearHistory())}
             >
-              <Text style={styles.buttonTextSecondary}>Clear History</Text>
+              <Text style={styles.buttonTextSecondary}>Clear</Text>
             </Pressable>
           </View>
         )}
@@ -122,20 +121,30 @@ const CounterSection = () => {
   );
 };
 
-// Todos Component
+// Todos Section with Complex Sagas
 const TodosSection = () => {
-  const dispatch = useAppDispatch();
-  const { items, filter, isLoading, error } = useAppSelector((state) => state.todos);
+  const dispatch = useSagaDispatch();
+  const { items, filter, isLoading, isAdding, error } = useSagaSelector((state) => state.todos);
   const [newTodoText, setNewTodoText] = useState('');
 
   useEffect(() => {
-    dispatch(fetchTodos());
+    dispatch(fetchTodosRequest());
   }, [dispatch]);
 
   const handleAddTodo = () => {
     if (newTodoText.trim()) {
-      dispatch(addTodoAsync(newTodoText.trim()));
+      dispatch(addTodoRequest(newTodoText.trim()));
       setNewTodoText('');
+    }
+  };
+
+  const handleToggleTodo = (id: string) => {
+    const todo = items.find(t => t.id === id);
+    if (todo) {
+      dispatch(updateTodoRequest({ 
+        id, 
+        updates: { completed: !todo.completed } 
+      }));
     }
   };
 
@@ -145,32 +154,36 @@ const TodosSection = () => {
     return true;
   });
 
-  const completedCount = items.filter(todo => todo.completed).length;
-
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>📝 Async Todos State</Text>
+      <Text style={styles.sectionTitle}>📝 Todos with Saga Effects</Text>
 
       {error && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>Error: {error}</Text>
+          <Pressable
+            style={[styles.button, styles.secondaryButton, styles.smallButton]}
+            onPress={() => dispatch(clearError())}
+          >
+            <Text style={styles.buttonTextSecondary}>Clear Error</Text>
+          </Pressable>
         </View>
       )}
 
       <View style={styles.inputRow}>
         <TextInput
           style={[styles.input, { flex: 1 }]}
-          placeholder="Add new todo..."
+          placeholder="Add new todo with saga..."
           value={newTodoText}
           onChangeText={setNewTodoText}
           onSubmitEditing={handleAddTodo}
         />
         <Pressable
-          style={[styles.button, styles.primaryButton]}
+          style={[styles.button, styles.sagaButton, isAdding && styles.disabledButton]}
           onPress={handleAddTodo}
-          disabled={isLoading}
+          disabled={isAdding}
         >
-          {isLoading ? (
+          {isAdding ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text style={styles.buttonText}>Add</Text>
@@ -198,16 +211,10 @@ const TodosSection = () => {
         ))}
       </View>
 
-      <View style={styles.todoStats}>
-        <Text style={styles.statsText}>
-          Total: {items.length} | Active: {items.length - completedCount} | Completed: {completedCount}
-        </Text>
-      </View>
-
       {isLoading && items.length === 0 ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <Text style={styles.loadingText}>Loading todos...</Text>
+          <ActivityIndicator size="large" color="#999999" />
+          <Text style={styles.loadingText}>Loading todos with saga...</Text>
         </View>
       ) : (
         <View style={styles.todosContainer}>
@@ -215,7 +222,7 @@ const TodosSection = () => {
             <View key={todo.id} style={styles.todoItem}>
               <Pressable
                 style={styles.todoCheck}
-                onPress={() => dispatch(toggleTodo(todo.id))}
+                onPress={() => handleToggleTodo(todo.id)}
               >
                 <Text style={styles.todoCheckText}>
                   {todo.completed ? '✅' : '⭕'}
@@ -232,47 +239,45 @@ const TodosSection = () => {
               <View style={[styles.priorityBadge, styles[`priority${todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}`]]}>
                 <Text style={styles.priorityText}>{todo.priority}</Text>
               </View>
-              
-              <Pressable
-                style={styles.deleteButton}
-                onPress={() => dispatch(deleteTodo(todo.id))}
-              >
-                <Text style={styles.deleteButtonText}>🗑️</Text>
-              </Pressable>
             </View>
           ))}
         </View>
       )}
 
-      {items.length > 0 && (
-        <View style={styles.todoActions}>
-          <Pressable
-            style={[styles.button, styles.secondaryButton, styles.smallButton]}
-            onPress={() => dispatch(markAllCompleted())}
-          >
-            <Text style={styles.buttonTextSecondary}>Complete All</Text>
-          </Pressable>
-          
-          <Pressable
-            style={[styles.button, styles.dangerButton, styles.smallButton]}
-            onPress={() => dispatch(clearCompleted())}
-          >
-            <Text style={styles.buttonText}>Clear Completed</Text>
-          </Pressable>
-        </View>
-      )}
+      <View style={styles.sagaActions}>
+        <Pressable
+          style={[styles.button, styles.sagaButton, styles.smallButton]}
+          onPress={() => dispatch(markAllCompletedRequest())}
+        >
+          <Text style={styles.buttonText}>Mark All (Saga)</Text>
+        </Pressable>
+        
+        <Pressable
+          style={[styles.button, styles.secondaryButton, styles.smallButton]}
+          onPress={() => dispatch(fetchTodosRequest())}
+        >
+          <Text style={styles.buttonTextSecondary}>Refresh</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
 
-// Users Component
+// Users Section with Race Conditions
 const UsersSection = () => {
-  const dispatch = useAppDispatch();
-  const { users, selectedUser, isLoading, error, searchQuery } = useAppSelector((state) => state.users);
+  const dispatch = useSagaDispatch();
+  const { users, isLoading, error, searchQuery } = useSagaSelector((state) => state.users);
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchUsersRequest());
   }, [dispatch]);
+
+  const handleToggleStatus = (userId: string, currentStatus: boolean) => {
+    dispatch(updateUserRequest({ 
+      userId, 
+      updates: { isActive: !currentStatus } 
+    }));
+  };
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -281,7 +286,7 @@ const UsersSection = () => {
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>👥 Users State</Text>
+      <Text style={styles.sectionTitle}>👥 Users with Race Conditions</Text>
 
       {error && (
         <View style={styles.errorContainer}>
@@ -296,45 +301,38 @@ const UsersSection = () => {
         onChangeText={(text) => dispatch(setSearchQuery(text))}
       />
 
-      <View style={styles.sortButtons}>
+      <View style={styles.buttonRow}>
         <Pressable
-          style={[styles.button, styles.secondaryButton, styles.smallButton]}
-          onPress={() => dispatch(sortUsers('name'))}
+          style={[styles.button, styles.sagaButton, styles.smallButton]}
+          onPress={() => dispatch(refreshUsersRequest('refresh'))}
         >
-          <Text style={styles.buttonTextSecondary}>Sort by Name</Text>
+          <Text style={styles.buttonText}>Refresh (Race)</Text>
         </Pressable>
         
         <Pressable
           style={[styles.button, styles.secondaryButton, styles.smallButton]}
-          onPress={() => dispatch(sortUsers('lastSeen'))}
+          onPress={() => dispatch(fetchUsersRequest())}
         >
-          <Text style={styles.buttonTextSecondary}>Sort by Activity</Text>
+          <Text style={styles.buttonTextSecondary}>Normal Fetch</Text>
         </Pressable>
       </View>
 
       {isLoading && users.length === 0 ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <Text style={styles.loadingText}>Loading users...</Text>
+          <ActivityIndicator size="large" color="#999999" />
+          <Text style={styles.loadingText}>Loading users with race condition...</Text>
         </View>
       ) : (
         <View style={styles.usersContainer}>
           {filteredUsers.map((user) => (
-            <Pressable
-              key={user.id}
-              style={[
-                styles.userItem,
-                selectedUser?.id === user.id && styles.selectedUserItem
-              ]}
-              onPress={() => dispatch(setSelectedUser(user))}
-            >
+            <View key={user.id} style={styles.userItem}>
               <Text style={styles.userAvatar}>{user.avatar}</Text>
               
               <View style={styles.userInfo}>
                 <Text style={styles.userName}>{user.name}</Text>
                 <Text style={styles.userEmail}>{user.email}</Text>
-                <Text style={styles.userLastSeen}>
-                  {user.isActive ? '🟢 Online' : `🔴 ${new Date(user.lastSeen).toLocaleDateString()}`}
+                <Text style={styles.userStatus}>
+                  {user.isActive ? '🟢 Online' : '🔴 Offline'}
                 </Text>
               </View>
               
@@ -343,126 +341,122 @@ const UsersSection = () => {
                   styles.statusButton,
                   user.isActive ? styles.activeStatus : styles.inactiveStatus
                 ]}
-                onPress={() => dispatch(updateUserStatus({ userId: user.id, isActive: !user.isActive }))}
+                onPress={() => handleToggleStatus(user.id, user.isActive)}
               >
                 <Text style={styles.statusButtonText}>
                   {user.isActive ? 'Deactivate' : 'Activate'}
                 </Text>
               </Pressable>
-            </Pressable>
+            </View>
           ))}
-        </View>
-      )}
-
-      {selectedUser && (
-        <View style={styles.selectedUserDetails}>
-          <Text style={styles.selectedUserTitle}>Selected User:</Text>
-          <Text style={styles.selectedUserText}>
-            {selectedUser.name} ({selectedUser.email})
-          </Text>
         </View>
       )}
     </View>
   );
 };
 
-// Auth Component
-const AuthSection = () => {
-  const dispatch = useAppDispatch();
-  const { user, isAuthenticated, isLoading, error } = useAppSelector((state) => state.auth);
-  const [email, setEmail] = useState('demo@example.com');
-  const [password, setPassword] = useState('password');
+// Weather Section with Fork/Join Patterns
+const WeatherSection = () => {
+  const dispatch = useSagaDispatch();
+  const { currentWeather, forecast, isLoading, isForecastLoading, error } = useSagaSelector((state) => state.weather);
+  const [location, setLocation] = useState('Madrid');
 
-  const handleLogin = () => {
-    dispatch(loginUser({ email, password }));
+  const handleFetchWeather = () => {
+    dispatch(fetchWeatherRequest(location));
   };
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
+  const handleFetchForecast = () => {
+    dispatch(fetchForecastRequest(location));
   };
 
-  const handleCheckAuth = () => {
-    dispatch(checkAuthStatus());
+  const handleRefreshAll = () => {
+    dispatch(refreshAllWeatherRequest(location));
   };
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>🔐 Auth State</Text>
+      <Text style={styles.sectionTitle}>🌤️ Weather with Fork/Join</Text>
 
       {error && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>Error: {error}</Text>
-          <Pressable
-            style={[styles.button, styles.secondaryButton, styles.smallButton]}
-            onPress={() => dispatch(clearError())}
-          >
-            <Text style={styles.buttonTextSecondary}>Clear Error</Text>
-          </Pressable>
         </View>
       )}
 
-      {!isAuthenticated ? (
-        <View style={styles.loginForm}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-          
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-          
-          <Pressable
-            style={[styles.button, styles.primaryButton]}
-            onPress={handleLogin}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Login</Text>
-            )}
-          </Pressable>
+      <View style={styles.inputRow}>
+        <TextInput
+          style={[styles.input, { flex: 1 }]}
+          placeholder="Enter location"
+          value={location}
+          onChangeText={setLocation}
+        />
+        <Pressable
+          style={[styles.button, styles.sagaButton]}
+          onPress={handleRefreshAll}
+        >
+          <Text style={styles.buttonText}>Refresh All</Text>
+        </Pressable>
+      </View>
 
-          <Pressable
-            style={[styles.button, styles.secondaryButton]}
-            onPress={handleCheckAuth}
-            disabled={isLoading}
-          >
-            <Text style={styles.buttonTextSecondary}>Check Stored Auth</Text>
-          </Pressable>
+      <View style={styles.buttonRow}>
+        <Pressable
+          style={[styles.button, styles.secondaryButton, styles.smallButton]}
+          onPress={handleFetchWeather}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#333" />
+          ) : (
+            <Text style={styles.buttonTextSecondary}>Weather Only</Text>
+          )}
+        </Pressable>
+        
+        <Pressable
+          style={[styles.button, styles.secondaryButton, styles.smallButton]}
+          onPress={handleFetchForecast}
+          disabled={isForecastLoading}
+        >
+          {isForecastLoading ? (
+            <ActivityIndicator size="small" color="#333" />
+          ) : (
+            <Text style={styles.buttonTextSecondary}>Forecast Only</Text>
+          )}
+        </Pressable>
+        
+        <Pressable
+          style={[styles.button, styles.dangerButton, styles.smallButton]}
+          onPress={() => dispatch(clearWeatherData())}
+        >
+          <Text style={styles.buttonText}>Clear</Text>
+        </Pressable>
+      </View>
 
-          <Text style={styles.demoText}>
-            Demo credentials: demo@example.com / password
+      {currentWeather && (
+        <View style={styles.weatherCard}>
+          <Text style={styles.weatherTitle}>Current Weather</Text>
+          <Text style={styles.weatherLocation}>{currentWeather.location}</Text>
+          <Text style={styles.weatherMain}>
+            {currentWeather.icon} {currentWeather.temperature}°C
+          </Text>
+          <Text style={styles.weatherCondition}>{currentWeather.condition}</Text>
+          <Text style={styles.weatherDetails}>
+            Humidity: {currentWeather.humidity}% | Wind: {currentWeather.windSpeed} km/h
           </Text>
         </View>
-      ) : (
-        <View style={styles.userProfile}>
-          <Text style={styles.welcomeText}>Welcome back!</Text>
-          <Text style={styles.userProfileAvatar}>{user?.avatar}</Text>
-          <Text style={styles.userProfileName}>{user?.name}</Text>
-          <Text style={styles.userProfileEmail}>{user?.email}</Text>
-          <Text style={styles.userProfileRole}>Role: {user?.role}</Text>
-          
-          <Pressable
-            style={[styles.button, styles.dangerButton]}
-            onPress={handleLogout}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Logout</Text>
-            )}
-          </Pressable>
+      )}
+
+      {forecast.length > 0 && (
+        <View style={styles.forecastContainer}>
+          <Text style={styles.forecastTitle}>5-Day Forecast</Text>
+          <View style={styles.forecastList}>
+            {forecast.map((day, index) => (
+              <View key={index} style={styles.forecastItem}>
+                <Text style={styles.forecastIcon}>{day.icon}</Text>
+                <Text style={styles.forecastTemp}>{day.temperature}°</Text>
+                <Text style={styles.forecastCondition}>{day.condition}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       )}
     </View>
@@ -470,86 +464,121 @@ const AuthSection = () => {
 };
 
 // Main Content Component
-const ReduxContent = () => {
+const SagaContent = () => {
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.title}>Redux Toolkit</Text>
+          <Text style={styles.title}>Redux Sagas</Text>
           <Text style={styles.subtitle}>
-            Store moderno con RTK, slices y async thunks
+            Manejo de side effects con generadores y effect handlers
           </Text>
         </View>
 
         <View style={styles.infoSection}>
-          <Text style={styles.infoTitle}>🔴 ¿Cuándo usar Redux Toolkit?</Text>
+          <Text style={styles.infoTitle}>🌀 ¿Cuándo usar Redux Sagas?</Text>
           <Text style={styles.infoText}>
-            • Apps complejas con mucho estado compartido{'\n'}
-            • Equipos grandes que necesitan patrones consistentes{'\n'}
-            • Cuando necesitas debugging avanzado y time-travel{'\n'}
-            • Apps que requieren persistencia compleja del estado
+            • Apps con lógica asíncrona compleja (race conditions, timeouts){'\n'}
+            • Cuando necesitas cancelar operaciones en progreso{'\n'}
+            • Testing de flujos asíncronos complejos{'\n'}
+            • Background tasks y polling de datos
           </Text>
           
           <Text style={styles.infoTitle}>⚙️ ¿Cómo funciona?</Text>
           <Text style={styles.infoText}>
-            RTK usa un store centralizado con "slices" que contienen estado y reducers. 
-            Los async thunks manejan operaciones asíncronas, y los componentes se conectan 
-            usando hooks tipados.
+            Redux Saga usa generadores para crear funciones que pueden pausarse y reanudarse. 
+            Los "effects" como call, put, take, fork permiten manejar async operations 
+            de forma declarativa y testeable. Los watchers escuchan acciones y spawnan workers.
           </Text>
         </View>
 
         <CounterSection />
         <TodosSection />
         <UsersSection />
-        <AuthSection />
+        <WeatherSection />
 
         <View style={styles.codeSection}>
-          <Text style={styles.codeTitle}>💡 Redux Toolkit Features</Text>
+          <Text style={styles.codeTitle}>💡 Redux Saga Effects</Text>
           <View style={styles.codeBlock}>
-            <Text style={styles.codeText}>{`// 1. Store Configuration
-import { configureStore } from '@reduxjs/toolkit';
+            <Text style={styles.codeText}>{`// 1. Basic Saga with Effects
+function* fetchUserSaga(action) {
+  try {
+    // Call API
+    const user = yield call(api.fetchUser, action.payload.id);
+    
+    // Dispatch success action
+    yield put(fetchUserSuccess(user));
+    
+    // Fork background task
+    yield fork(trackUserActivity, user.id);
+    
+  } catch (error) {
+    yield put(fetchUserFailure(error.message));
+  }
+}
 
-export const store = configureStore({
-  reducer: {
-    counter: counterSlice,
-    todos: todosSlice,
-  },
-  devTools: __DEV__,
-});
+// 2. Watcher Saga
+function* watchFetchUser() {
+  yield takeEvery(FETCH_USER_REQUEST, fetchUserSaga);
+}
 
-// 2. Slice Creation
-const counterSlice = createSlice({
-  name: 'counter',
-  initialState: { value: 0 },
-  reducers: {
-    increment: (state) => {
-      state.value += 1; // Immer allows mutations
-    },
-  },
-});
+// 3. Race Conditions
+function* fetchWithTimeout(action) {
+  const { response, timeout } = yield race({
+    response: call(api.fetchData, action.payload),
+    timeout: delay(5000)
+  });
+  
+  if (timeout) {
+    yield put(fetchTimeout());
+  } else {
+    yield put(fetchSuccess(response));
+  }
+}
 
-// 3. Async Thunks
-export const fetchTodos = createAsyncThunk(
-  'todos/fetchTodos',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.getTodos();
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+// 4. Cancellation
+function* cancellableFetch() {
+  try {
+    const data = yield call(api.fetchData);
+    yield put(fetchSuccess(data));
+  } finally {
+    if (yield cancelled()) {
+      // Cleanup logic
+      yield call(api.cancelRequest);
     }
   }
-);
+}
 
-// 4. Typed Hooks
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;`}</Text>
+// 5. Parallel Execution
+function* fetchAllData() {
+  const [users, posts, comments] = yield all([
+    call(api.fetchUsers),
+    call(api.fetchPosts),
+    call(api.fetchComments)
+  ]);
+  
+  yield put(dataLoaded({ users, posts, comments }));
+}`}</Text>
+          </View>
+        </View>
+
+        <View style={styles.benefitsSection}>
+          <Text style={styles.benefitsTitle}>🌀 Ventajas de Redux Sagas</Text>
+          <View style={styles.benefitsList}>
+            <Text style={styles.benefitItem}>• Control granular de async flows</Text>
+            <Text style={styles.benefitItem}>• Cancelación automática de operaciones</Text>
+            <Text style={styles.benefitItem}>• Testing declarativo y determinista</Text>
+            <Text style={styles.benefitItem}>• Race conditions y timeouts manejables</Text>
+            <Text style={styles.benefitItem}>• Background tasks y polling</Text>
+            <Text style={styles.benefitItem}>• Fork/join para paralelismo</Text>
+            <Text style={styles.benefitItem}>• DevTools integration completa</Text>
+            <Text style={styles.benefitItem}>• Separation of concerns clara</Text>
           </View>
         </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            🔴 Redux Toolkit simplifica Redux con menos boilerplate y mejores patterns
+            🌀 Redux Sagas convierte operaciones async complejas en código declarativo y testeable
           </Text>
         </View>
       </ScrollView>
@@ -558,10 +587,10 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;`}</T
 };
 
 // Main Component with Provider
-const ReduxToolkitExample = () => {
+const ReduxSagasExample = () => {
   return (
-    <Provider store={reduxStore}>
-      <ReduxContent />
+    <Provider store={sagaStore}>
+      <SagaContent />
     </Provider>
   );
 };
@@ -596,23 +625,23 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   infoSection: {
-    backgroundColor: '#e8f4fd',
+    backgroundColor: '#f0f0f0',
     margin: 10,
     padding: 16,
     borderRadius: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#007AFF',
+    borderLeftColor: '#999999',
   },
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#0056b3',
+    color: '#666',
     marginBottom: 8,
     marginTop: 8,
   },
   infoText: {
     fontSize: 14,
-    color: '#0056b3',
+    color: '#666',
     lineHeight: 20,
     marginBottom: 8,
   },
@@ -640,11 +669,12 @@ const styles = StyleSheet.create({
   counterValue: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: '#999999',
   },
   buttonRow: {
     flexDirection: 'row',
     gap: 12,
+    flexWrap: 'wrap',
   },
   inputRow: {
     flexDirection: 'row',
@@ -674,6 +704,12 @@ const styles = StyleSheet.create({
   },
   dangerButton: {
     backgroundColor: '#FF3B30',
+  },
+  sagaButton: {
+    backgroundColor: '#999999',
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',
@@ -744,8 +780,8 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   activeFilter: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: '#999999',
+    borderColor: '#999999',
   },
   filterButtonText: {
     fontSize: 12,
@@ -755,16 +791,9 @@ const styles = StyleSheet.create({
   activeFilterText: {
     color: '#fff',
   },
-  todoStats: {
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  statsText: {
-    fontSize: 14,
-    color: '#666',
-  },
   todosContainer: {
     gap: 8,
+    marginBottom: 16,
   },
   todoItem: {
     flexDirection: 'row',
@@ -811,22 +840,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-  deleteButton: {
-    padding: 4,
-  },
-  deleteButtonText: {
-    fontSize: 16,
-  },
-  todoActions: {
+  sagaActions: {
     flexDirection: 'row',
     gap: 12,
     justifyContent: 'center',
-    marginTop: 16,
-  },
-  sortButtons: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 12,
   },
   usersContainer: {
     gap: 8,
@@ -838,12 +855,6 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#f8f9fa',
     borderRadius: 8,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  selectedUserItem: {
-    borderColor: '#007AFF',
-    backgroundColor: '#e8f4fd',
   },
   userAvatar: {
     fontSize: 32,
@@ -860,7 +871,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
-  userLastSeen: {
+  userStatus: {
     fontSize: 12,
     color: '#999',
   },
@@ -880,56 +891,75 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
-  selectedUserDetails: {
-    marginTop: 16,
-    padding: 12,
-    backgroundColor: '#e8f4fd',
+  weatherCard: {
+    backgroundColor: '#f0f0f0',
+    padding: 16,
     borderRadius: 8,
+    marginBottom: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#999999',
   },
-  selectedUserTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#0056b3',
-    marginBottom: 4,
+  weatherTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666',
+    marginBottom: 8,
   },
-  selectedUserText: {
-    fontSize: 14,
-    color: '#0056b3',
-  },
-  loginForm: {
-    gap: 12,
-  },
-  userProfile: {
-    alignItems: 'center',
-    gap: 12,
-  },
-  welcomeText: {
+  weatherLocation: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#34C759',
+    color: '#333',
+    marginBottom: 4,
   },
-  userProfileAvatar: {
-    fontSize: 48,
-  },
-  userProfileName: {
-    fontSize: 20,
+  weatherMain: {
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
+    marginBottom: 4,
   },
-  userProfileEmail: {
+  weatherCondition: {
     fontSize: 16,
     color: '#666',
+    marginBottom: 8,
   },
-  userProfileRole: {
+  weatherDetails: {
     fontSize: 14,
     color: '#999',
-    textTransform: 'capitalize',
   },
-  demoText: {
-    fontSize: 12,
-    color: '#999',
+  forecastContainer: {
+    marginTop: 16,
+  },
+  forecastTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
+  },
+  forecastList: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  forecastItem: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    padding: 8,
+    borderRadius: 8,
+  },
+  forecastIcon: {
+    fontSize: 20,
+    marginBottom: 4,
+  },
+  forecastTemp: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 2,
+  },
+  forecastCondition: {
+    fontSize: 10,
+    color: '#666',
     textAlign: 'center',
-    fontStyle: 'italic',
   },
   codeSection: {
     backgroundColor: '#2d3748',
@@ -954,6 +984,28 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 14,
   },
+  benefitsSection: {
+    backgroundColor: '#f0f0f0',
+    margin: 10,
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#999999',
+  },
+  benefitsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#666',
+    marginBottom: 12,
+  },
+  benefitsList: {
+    gap: 8,
+  },
+  benefitItem: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+  },
   footer: {
     padding: 20,
     alignItems: 'center',
@@ -966,4 +1018,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReduxToolkitExample;
+export default ReduxSagasExample;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -323,6 +323,23 @@ const ContextContent = () => {
           </Text>
         </View>
 
+        <View style={[styles.infoSection, { backgroundColor: '#fff9e6', borderLeftColor: '#FF9500' }]}>
+          <Text style={[styles.infoTitle, { color: '#cc6600' }]}>⚛️ ¿Cuándo usar Context API?</Text>
+          <Text style={[styles.infoText, { color: '#cc6600' }]}>
+            • Apps que ya usan React y no quieren dependencias extra{'\n'}
+            • Estado que cambia poco y se comparte ampliamente (tema, auth){'\n'}
+            • Proyectos pequeños con requisitos de estado simples{'\n'}
+            • Cuando el presupuesto de bundle es crítico
+          </Text>
+          
+          <Text style={[styles.infoTitle, { color: '#cc6600' }]}>⚙️ ¿Cómo funciona?</Text>
+          <Text style={[styles.infoText, { color: '#cc6600' }]}>
+            Usa createContext() para crear contextos y Provider para compartir valores. 
+            Los componentes consumen datos con useContext(). Requiere optimizaciones 
+            manuales (useMemo, useCallback) para evitar re-renders innecesarios.
+          </Text>
+        </View>
+
         <ThemeSection />
         <CartSection />
         <NotificationsSection />
@@ -464,6 +481,23 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
+  },
+  infoSection: {
+    margin: 10,
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    marginTop: 8,
+  },
+  infoText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 8,
   },
   section: {
     margin: 10,

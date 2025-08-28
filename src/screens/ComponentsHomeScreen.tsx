@@ -15,10 +15,13 @@ const ComponentsHomeScreen = ({ navigation }: any) => {
     { name: 'TextInput', screen: 'TextInputExample', description: 'Entrada de texto del usuario con validaciones' },
     { name: 'ScrollView', screen: 'ScrollViewExample', description: 'Contenido desplazable verticalmente' },
     { name: 'FlatList', screen: 'FlatListExample', description: 'Lista optimizada para grandes conjuntos de datos' },
+    { name: 'SectionList', screen: 'SectionListExample', description: 'Lista organizada por secciones con encabezados' },
     { name: 'Button', screen: 'ButtonExample', description: 'Botón básico del sistema' },
     { name: 'Pressable', screen: 'PressableExample', description: 'Componente presionable altamente personalizable' },
     { name: 'TouchableOpacity', screen: 'TouchableOpacityExample', description: 'Botón con efecto de opacidad' },
     { name: 'TouchableHighlight', screen: 'TouchableHighlightExample', description: 'Botón con efecto de resaltado' },
+    { name: 'Switch', screen: 'SwitchExample', description: 'Control de encendido/apagado para opciones binarias' },
+    { name: 'ActivityIndicator', screen: 'ActivityIndicatorExample', description: 'Indicador de carga y progreso' },
     { name: 'Modal', screen: 'ModalExample', description: 'Ventana modal superpuesta' },
     { name: 'Image', screen: 'ImageExample', description: 'Mostrar imágenes locales y remotas' },
   ];
@@ -30,10 +33,12 @@ const ComponentsHomeScreen = ({ navigation }: any) => {
       onPress={() => navigation.navigate(component.screen)}
       android_ripple={{ color: '#e0e0e0' }}>
       <View style={styles.buttonContent}>
-        <Text style={styles.componentName}>{component.name}</Text>
-        <Text style={styles.componentDescription}>{component.description}</Text>
+        <View style={styles.textContent}>
+          <Text style={styles.componentName}>{component.name}</Text>
+          <Text style={styles.componentDescription}>{component.description}</Text>
+        </View>
+        <Text style={styles.arrow}>→</Text>
       </View>
-      <Text style={styles.arrow}>→</Text>
     </Pressable>
   );
 
@@ -114,24 +119,28 @@ const styles = StyleSheet.create({
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
+  },
+  textContent: {
+    flex: 1,
+    marginRight: 12,
   },
   componentName: {
     fontSize: 18,
     fontWeight: '600',
     color: '#007AFF',
-    flex: 1,
+    marginBottom: 4,
   },
   componentDescription: {
     fontSize: 14,
     color: '#666',
-    flex: 2,
-    marginLeft: 12,
+    lineHeight: 20,
   },
   arrow: {
     fontSize: 20,
     color: '#007AFF',
-    marginRight: 16,
+    fontWeight: 'bold',
   },
   footer: {
     padding: 20,

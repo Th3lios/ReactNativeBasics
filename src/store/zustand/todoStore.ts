@@ -91,7 +91,7 @@ export const useTodoStore = create<TodoState>()(
       set({ isLoading: true });
       try {
         // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise<void>(resolve => setTimeout(() => resolve(), 1000));
         
         const mockTodos: Todo[] = [
           {
@@ -120,7 +120,7 @@ export const useTodoStore = create<TodoState>()(
       set({ isLoading: true });
       try {
         // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise<void>(resolve => setTimeout(() => resolve(), 500));
         
         const newTodo: Todo = {
           id: Date.now().toString(),

@@ -90,11 +90,23 @@ const StateManagementHomeScreen = ({ navigation }: any) => {
     }
   ];
 
+  const getNavigationRoute = (id: string) => {
+    const routeMap: { [key: string]: string } = {
+      'redux-toolkit': 'redux-toolkitExample',
+      'redux-sagas': 'redux-sagasExample',
+      'zustand': 'zustandExample',
+      'context-api': 'context-apiExample',
+      'jotai': 'jotaiExample',
+      'valtio': 'valtioExample',
+    };
+    return routeMap[id] || `${id}Example`;
+  };
+
   const renderExampleCard = (example: any) => (
     <Pressable
       key={example.id}
       style={[styles.exampleCard, { borderLeftColor: example.color }]}
-      onPress={() => navigation.navigate(`${example.id}Example`)}
+      onPress={() => navigation.navigate(getNavigationRoute(example.id))}
       android_ripple={{ color: '#e0e0e0' }}>
       
       <View style={styles.cardHeader}>
@@ -365,6 +377,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderLeftWidth: 4,
   },
+  disabledCard: {
+    opacity: 0.6,
+    backgroundColor: '#f5f5f5',
+  },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -387,6 +403,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     lineHeight: 20,
+  },
+  disabledTitle: {
+    color: '#999',
+  },
+  disabledDescription: {
+    color: '#aaa',
+  },
+  disabledNote: {
+    fontSize: 12,
+    color: '#007AFF',
+    fontStyle: 'italic',
+    marginTop: 4,
+  },
+  comingSoonBadge: {
+    backgroundColor: '#ff9800',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  comingSoonText: {
+    fontSize: 10,
+    color: '#fff',
+    fontWeight: 'bold',
   },
   arrow: {
     fontSize: 20,
