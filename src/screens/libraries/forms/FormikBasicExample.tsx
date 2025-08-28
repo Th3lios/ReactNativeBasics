@@ -2,48 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
+import { 
+  loginSchema, 
+  registerSchema
+} from '../../../libs/schemas';
 
-// Validation Schema
-const loginSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Email inválido')
-    .required('Email es requerido'),
-  password: Yup.string()
-    .min(6, 'Mínimo 6 caracteres')
-    .required('Contraseña es requerida'),
-});
-
-const registerSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .min(2, 'Muy corto')
-    .max(50, 'Muy largo')
-    .required('Nombre es requerido'),
-  lastName: Yup.string()
-    .min(2, 'Muy corto')
-    .max(50, 'Muy largo')
-    .required('Apellido es requerido'),
-  email: Yup.string()
-    .email('Email inválido')
-    .required('Email es requerido'),
-  password: Yup.string()
-    .min(8, 'Mínimo 8 caracteres')
-    .matches(/(?=.*[a-z])/, 'Debe contener al menos una minúscula')
-    .matches(/(?=.*[A-Z])/, 'Debe contener al menos una mayúscula')
-    .matches(/(?=.*\d)/, 'Debe contener al menos un número')
-    .required('Contraseña es requerida'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Las contraseñas no coinciden')
-    .required('Confirmar contraseña es requerido'),
-  age: Yup.number()
-    .positive('Debe ser positivo')
-    .integer('Debe ser un número entero')
-    .min(18, 'Debes ser mayor de 18 años')
-    .max(120, 'Edad no válida')
-    .required('Edad es requerida'),
-  terms: Yup.boolean()
-    .oneOf([true], 'Debes aceptar los términos y condiciones'),
-});
+// Schemas importados desde libs/schemas
 
 // Login Form Component
 const LoginForm = () => {

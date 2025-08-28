@@ -44,12 +44,39 @@ import CustomHooksExample from './src/screens/hooks/CustomHooksExample';
 // Import library examples
 import NavigationHomeScreen from './src/screens/libraries/NavigationHomeScreen';
 import FormsHomeScreen from './src/screens/libraries/FormsHomeScreen';
+import StateManagementHomeScreen from './src/screens/libraries/StateManagementHomeScreen';
 import StackNavigationExample from './src/screens/libraries/navigation/StackNavigationExample';
 import StackDetailsExample from './src/screens/libraries/navigation/StackDetailsExample';
 import BottomTabsExample from './src/screens/libraries/navigation/BottomTabsExample';
 import TopTabsExample from './src/screens/libraries/navigation/TopTabsExample';
 import DrawerNavigationExample from './src/screens/libraries/navigation/DrawerNavigationExample';
 import FormikBasicExample from './src/screens/libraries/forms/FormikBasicExample';
+import FormikYupExample from './src/screens/libraries/forms/FormikYupExample';
+import FormikAdvancedExample from './src/screens/libraries/forms/FormikAdvancedExample';
+
+// Import state management examples
+import ReduxToolkitExample from './src/screens/libraries/state/ReduxToolkitExample';
+import ZustandExample from './src/screens/libraries/state/ZustandExample';
+import ContextAPIExample from './src/screens/libraries/state/ContextAPIExample';
+import JotaiExample from './src/screens/libraries/state/JotaiExample';
+import ValtioExample from './src/screens/libraries/state/ValtioExample';
+
+// Import animation examples
+import AnimationsHomeScreen from './src/screens/libraries/animations/AnimationsHomeScreen';
+import BasicAnimationsExample from './src/screens/libraries/animations/BasicAnimationsExample';
+import GestureAnimationsExample from './src/screens/libraries/animations/GestureAnimationsExample';
+import LayoutAnimationsExample from './src/screens/libraries/animations/LayoutAnimationsExample';
+import ComplexAnimationsExample from './src/screens/libraries/animations/ComplexAnimationsExample';
+
+// Import bottomsheet examples
+import BottomSheetHomeScreen from './src/screens/libraries/bottomsheet/BottomSheetHomeScreen';
+import BasicBottomSheetExample from './src/screens/libraries/bottomsheet/BasicBottomSheetExample';
+import ScrollableBottomSheetExample from './src/screens/libraries/bottomsheet/ScrollableBottomSheetExample';
+import CustomBottomSheetExample from './src/screens/libraries/bottomsheet/CustomBottomSheetExample';
+import ModalBottomSheetExample from './src/screens/libraries/bottomsheet/ModalBottomSheetExample';
+
+// Import utilities
+import UtilitiesHomeScreen from './src/screens/libraries/utilities/UtilitiesHomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -195,6 +222,38 @@ function App() {
             options={{ title: 'Librerías' }}
           />
           
+          {/* State Management Section */}
+          <Stack.Screen 
+            name="StateManagementHome" 
+            component={StateManagementHomeScreen} 
+            options={{ title: 'Gestión de Estados' }}
+          />
+          <Stack.Screen 
+            name="redux-toolkitExample" 
+            component={ReduxToolkitExample} 
+            options={{ title: 'Redux Toolkit' }}
+          />
+          <Stack.Screen 
+            name="zustandExample" 
+            component={ZustandExample} 
+            options={{ title: 'Zustand' }}
+          />
+          <Stack.Screen 
+            name="context-apiExample" 
+            component={ContextAPIExample} 
+            options={{ title: 'Context API' }}
+          />
+          <Stack.Screen 
+            name="jotaiExample" 
+            component={JotaiExample} 
+            options={{ title: 'Jotai' }}
+          />
+          <Stack.Screen 
+            name="valtioExample" 
+            component={ValtioExample} 
+            options={{ title: 'Valtio' }}
+          />
+          
           {/* Navigation Examples */}
           <Stack.Screen 
             name="navigationHome" 
@@ -238,21 +297,81 @@ function App() {
             component={FormikBasicExample} 
             options={{ title: 'Formik Básico' }}
           />
+          <Stack.Screen 
+            name="FormikYupExample" 
+            component={FormikYupExample} 
+            options={{ title: 'Formik + Yup' }}
+          />
+          <Stack.Screen 
+            name="FormikAdvancedExample" 
+            component={FormikAdvancedExample} 
+            options={{ title: 'Formulario Avanzado' }}
+          />
+
+          {/* Animation Examples */}
+          <Stack.Screen 
+            name="animationsHome" 
+            component={AnimationsHomeScreen} 
+            options={{ title: 'Animaciones' }}
+          />
+          <Stack.Screen 
+            name="basicAnimations" 
+            component={BasicAnimationsExample} 
+            options={{ title: 'Animaciones Básicas' }}
+          />
+          <Stack.Screen 
+            name="gestureAnimations" 
+            component={GestureAnimationsExample} 
+            options={{ title: 'Animaciones con Gestos' }}
+          />
+          <Stack.Screen 
+            name="layoutAnimations" 
+            component={LayoutAnimationsExample} 
+            options={{ title: 'Layout Animations' }}
+          />
+          <Stack.Screen 
+            name="complexAnimations" 
+            component={ComplexAnimationsExample} 
+            options={{ title: 'Animaciones Complejas' }}
+          />
+
+          {/* Bottom Sheet Examples */}
+          <Stack.Screen 
+            name="bottomsheetHome" 
+            component={BottomSheetHomeScreen} 
+            options={{ title: 'Bottom Sheets' }}
+          />
+          <Stack.Screen 
+            name="basicBottomSheet" 
+            component={BasicBottomSheetExample} 
+            options={{ title: 'Bottom Sheet Básico' }}
+          />
+          <Stack.Screen 
+            name="scrollableBottomSheet" 
+            component={ScrollableBottomSheetExample} 
+            options={{ title: 'Bottom Sheet Scrollable' }}
+          />
+          <Stack.Screen 
+            name="customBottomSheet" 
+            component={CustomBottomSheetExample} 
+            options={{ title: 'Customización Avanzada' }}
+          />
+          <Stack.Screen 
+            name="modalBottomSheet" 
+            component={ModalBottomSheetExample} 
+            options={{ title: 'Modal Bottom Sheet' }}
+          />
+
+          {/* Utilities */}
+          <Stack.Screen 
+            name="utilitiesHome" 
+            component={UtilitiesHomeScreen} 
+            options={{ title: 'Utilidades' }}
+          />
 
           {/* Placeholder screens for remaining sections */}
           
-          <Stack.Screen 
-            name="StateManagementHome" 
-            options={{ title: 'Gestión de Estados' }}>
-            {(props) => (
-              <PlaceholderScreen 
-                {...props}
-                title="Gestión de Estados"
-                description="Redux, Zustand, Context API y más"
-                icon="🗃️"
-              />
-            )}
-          </Stack.Screen>
+
           
           <Stack.Screen 
             name="ArchitectureHome" 

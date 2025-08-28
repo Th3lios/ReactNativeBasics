@@ -1,97 +1,284 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native Sandbox 📱
 
-# Getting Started
+Un proyecto completo de aprendizaje y referencia para React Native, que incluye ejemplos interactivos de componentes básicos, hooks, librerías populares y mejores prácticas.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🎯 Objetivo del Proyecto
 
-## Step 1: Start Metro
+Este proyecto sirve como una **guía completa y práctica** para desarrolladores que quieren aprender o referenciar:
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **Componentes básicos** de React Native
+- **Hooks** de React y React Native  
+- **Librerías populares** del ecosistema
+- **Patrones de desarrollo** y mejores prácticas
+- **Ejemplos interactivos** con código funcional
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 📚 Contenido Implementado
 
-```sh
-# Using npm
+### 🧩 **Componentes Básicos**
+Ejemplos interactivos de todos los componentes fundamentales:
+
+- **View** - Contenedor básico con ejemplos de layout
+- **Text** - Renderizado de texto con estilos y propiedades
+- **ScrollView** - Scroll vertical y horizontal con contenido
+- **FlatList** - Listas optimizadas con datos dinámicos
+- **Button** - Botones básicos con diferentes estados
+- **Pressable** - Componente de presión avanzado
+- **TouchableOpacity** - Botones con feedback visual
+- **TouchableHighlight** - Botones con highlight personalizable
+- **Modal** - Modales con diferentes tipos y animaciones
+- **Image** - Carga de imágenes locales y remotas
+- **TextInput** - Inputs con validación (incluye RUT chileno)
+
+### 🪝 **Hooks Completos**
+Ejemplos detallados con casos de uso reales:
+
+- **useState** - Manejo de estado local con contadores y toggles
+- **useEffect** - Efectos secundarios y lifecycle
+- **useLayoutEffect** - Efectos síncronos para layouts
+- **useMemo** - Optimización con memoización de valores
+- **useCallback** - Optimización de funciones
+- **useImperativeHandle** - Exposición de refs personalizados
+- **React.memo** - Optimización de componentes
+- **Custom Hooks** - 7 hooks personalizados modulares:
+  - `useCounter` - Contador con incremento/decremento
+  - `useToggle` - Toggle booleano
+  - `useLocalStorage` - Persistencia en AsyncStorage
+  - `useFetch` - Llamadas HTTP con estados
+  - `useDebounce` - Debounce para inputs
+  - `useInterval` - Intervalos con cleanup
+  - `useForm` - Manejo de formularios
+
+### 📚 **Librerías Populares**
+Implementación y ejemplos de las librerías más utilizadas:
+
+#### 🧭 **React Navigation**
+- **Stack Navigator** - Navegación de pila con parámetros
+- **Bottom Tabs** - Tabs inferiores personalizables
+- **Top Tabs** - Material top tabs con swipe
+- **Drawer Navigator** - Menú lateral deslizante
+- **Configuración avanzada** - Headers, deep linking, etc.
+
+#### 📝 **Forms & Validation**
+- **Formik** - Manejo robusto de formularios
+- **Yup** - Validación declarativa con esquemas
+- **Ejemplos complejos** - Arrays, objetos anidados, validación async
+
+#### 🎬 **Animations**
+- **React Native Reanimated 3** - Animaciones fluidas
+- **Gesture Handler** - Gestos interactivos
+- **Layout Animations** - Transiciones automáticas
+
+#### 📋 **UI Components**
+- **Gorhom Bottom Sheet** - Bottom sheets modernos
+- **Custom Backdrops** - Fondos personalizables
+- **Snap Points** - Puntos de anclaje dinámicos
+
+#### 🔧 **Utility Libraries**
+- **Jail Monkey** - Detección de jailbreak/root
+- **React Native Camera** - Cámara y galería
+- **Splash Screen** - Pantalla de carga nativa
+- **SVG** - Gráficos vectoriales
+- **WebView** - Vista web embebida
+
+## 🏗️ Arquitectura del Proyecto
+
+```
+src/
+├── screens/
+│   ├── components/          # Ejemplos de componentes básicos
+│   ├── hooks/              # Ejemplos de hooks
+│   ├── libraries/          # Ejemplos de librerías
+│   │   ├── navigation/     # React Navigation
+│   │   ├── forms/          # Formik + Yup
+│   │   ├── animations/     # Reanimated
+│   │   ├── bottomsheet/    # Gorhom Bottom Sheet
+│   │   └── utilities/      # Utilidades varias
+│   ├── MainMenuScreen.tsx  # Menú principal
+│   └── PlaceholderScreen.tsx
+├── hooks/
+│   └── customhooks/        # Custom hooks modulares
+└── components/
+    └── ui/                 # Componentes reutilizables
+```
+
+## 🚀 Instalación y Configuración
+
+### Prerrequisitos
+
+Asegúrate de tener configurado tu entorno de desarrollo React Native:
+- [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment)
+- Node.js 20+ (usar `nvm use 20`)
+- CocoaPods para iOS
+- Android Studio para Android
+
+### Instalación
+
+```bash
+# Clonar el repositorio
+git clone <repository-url>
+cd ReactNativeSandBox
+
+# Usar Node 20
+nvm use 20
+
+# Instalar dependencias
+npm install
+
+# Para iOS - Instalar pods
+cd ios && pod install && cd ..
+```
+
+### Librerías Instaladas
+
+#### Navigation
+```bash
+@react-navigation/native@7.1.17
+@react-navigation/stack@7.4.7
+@react-navigation/bottom-tabs@7.4.6
+@react-navigation/material-top-tabs@7.3.6
+@react-navigation/drawer@7.5.7
+react-native-gesture-handler@2.28.0
+react-native-pager-view@6.9.1
+```
+
+#### Forms & Validation
+```bash
+formik@2.4.6
+yup@1.7.0
+```
+
+#### Animations
+```bash
+react-native-reanimated@3.15.0
+```
+
+#### UI & Utilities
+```bash
+@gorhom/bottom-sheet@5.2.3
+jail-monkey@2.8.4
+react-native-splash-screen@3.3.0
+react-native-svg@15.12.1
+react-native-webview@13.16.0
+```
+
+## 🏃‍♂️ Ejecutar el Proyecto
+
+### Iniciar Metro
+
+```bash
+# Con npm
 npm start
 
-# OR using Yarn
+# Con yarn
 yarn start
 ```
 
-## Step 2: Build and run your app
+### Ejecutar en iOS
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+```bash
+# Con npm
 npm run ios
 
-# OR using Yarn
+# Con yarn
 yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Ejecutar en Android
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```bash
+# Con npm
+npm run android
 
-## Step 3: Modify your app
+# Con yarn
+yarn android
+```
 
-Now that you have successfully run the app, let's make changes!
+## 📱 Funcionalidades Destacadas
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### 🎨 **Interfaz Educativa**
+- **Navegación intuitiva** entre secciones
+- **Ejemplos interactivos** con código en vivo
+- **Explicaciones detalladas** de cada concepto
+- **Mejores prácticas** documentadas
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### 💡 **Ejemplos Prácticos**
+- **Código funcional** en todos los ejemplos
+- **Casos de uso reales** del mundo real
+- **Patrones comunes** de desarrollo
+- **Optimizaciones** de performance
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### 🔧 **Características Técnicas**
+- **TypeScript** en todo el proyecto
+- **Linting** configurado con ESLint
+- **Arquitectura escalable** y mantenible
+- **Comentarios explicativos** en el código
 
-## Congratulations! :tada:
+## 🎓 Uso Educativo
 
-You've successfully run and modified your React Native App. :partying_face:
+Este proyecto está diseñado para:
 
-### Now what?
+### 👨‍🎓 **Estudiantes**
+- Aprender React Native desde cero
+- Entender patrones de desarrollo
+- Practicar con ejemplos reales
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+### 👨‍💻 **Desarrolladores**
+- Referencia rápida de componentes
+- Ejemplos de librerías populares
+- Patrones de arquitectura
 
-# Troubleshooting
+### 🏢 **Equipos**
+- Onboarding de nuevos desarrolladores
+- Estándares de código consistentes
+- Base para proyectos nuevos
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## 🚧 Estado de Desarrollo
 
-# Learn More
+### ✅ **Completado**
+- [x] Estructura base del proyecto
+- [x] Navegación principal implementada
+- [x] Todos los componentes básicos con ejemplos
+- [x] Hooks completos con casos de uso
+- [x] React Navigation (Stack, Bottom Tabs)
+- [x] Formik + Yup documentación
+- [x] Instalación y configuración de librerías
 
-To learn more about React Native, take a look at the following resources:
+### 🔄 **En Desarrollo**
+- [ ] Top Tabs y Drawer Navigator
+- [ ] Ejemplos interactivos de Formik
+- [ ] React Native Reanimated ejemplos
+- [ ] Gorhom Bottom Sheet ejemplos
+- [ ] Utility libraries ejemplos
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### 📋 **Planificado**
+- [ ] Gestión de Estados (Redux, Zustand, Context)
+- [ ] Arquitectura de Proyectos
+- [ ] Flujos de Desarrollo
+- [ ] Patrones Comunes
+- [ ] Comparación Vue 3 vs React Native
+
+## 🤝 Contribución
+
+Este proyecto está abierto a contribuciones. Si quieres agregar más ejemplos o mejorar los existentes:
+
+1. Fork el proyecto
+2. Crea una branch para tu feature
+3. Commit tus cambios
+4. Push a la branch
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+
+## 🙏 Agradecimientos
+
+- **React Native Team** por el framework
+- **Expo Team** por las herramientas de desarrollo
+- **Comunidad Open Source** por las librerías utilizadas
+
+---
+
+**¡Explora, aprende y contribuye!** 🚀
+
+Este proyecto está en constante evolución para mantenerse actualizado con las últimas mejores prácticas de React Native.

@@ -40,7 +40,7 @@ const MainMenuScreen = ({ navigation }: any) => {
       description: 'Redux, Zustand, Context API y más',
       icon: '🗃️',
       screen: 'StateManagementHome',
-      available: false,
+      available: true,
     },
     {
       id: 'architecture',

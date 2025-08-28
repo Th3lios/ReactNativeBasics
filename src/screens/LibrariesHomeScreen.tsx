@@ -86,7 +86,19 @@ const LibrariesHomeScreen = ({ navigation }: any) => {
       style={[styles.categoryCard, { borderLeftColor: category.color }]}
       onPress={() => {
         if (category.available) {
-          navigation.navigate(`${category.id}Home`);
+          // Mapear IDs a los nombres correctos de las pantallas
+          const screenMapping: { [key: string]: string } = {
+            'navigation': 'navigationHome',
+            'forms': 'formsHome', 
+            'animations': 'animationsHome',
+            'bottomsheet': 'bottomsheetHome',
+            'utilities': 'utilitiesHome'
+          };
+          
+          const screenName = screenMapping[category.id];
+          if (screenName) {
+            navigation.navigate(screenName);
+          }
         }
       }}
       android_ripple={{ color: '#e0e0e0' }}>
