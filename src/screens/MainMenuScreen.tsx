@@ -67,11 +67,27 @@ const MainMenuScreen = ({ navigation }: any) => {
       available: true,
     },
     {
+      id: 'styling',
+      title: 'Estilos',
+      description: 'StyleSheet, layout, temas y diseño responsivo',
+      icon: '🎨',
+      screen: 'StylingHome',
+      available: true,
+    },
+    {
       id: 'comparison',
       title: 'Vue 3 vs React Native',
       description: 'Transición desde Vue 3 a React Native',
       icon: '⚖️',
       screen: 'ComparisonHome',
+      available: true,
+    },
+    {
+      id: 'cheatsheet',
+      title: 'CheatSheet',
+      description: 'Comandos esenciales para desarrollo React Native',
+      icon: '📚',
+      screen: 'CheatSheet',
       available: true,
     },
   ];

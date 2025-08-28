@@ -101,8 +101,18 @@ import PerformancePatternsExample from './src/screens/patterns/PerformancePatter
 import HookPatternsExample from './src/screens/patterns/HookPatternsExample';
 import RNSpecificPatternsExample from './src/screens/patterns/RNSpecificPatternsExample';
 
+// Import styling examples
+import StylingHomeScreen from './src/screens/styling/StylingHomeScreen';
+import BasicStylesExample from './src/screens/styling/BasicStylesExample';
+import LayoutStylesExample from './src/screens/styling/LayoutStylesExample';
+import ResponsiveStylesExample from './src/screens/styling/ResponsiveStylesExample';
+import ThemingStylesExample from './src/screens/styling/ThemingStylesExample';
+
 // Import comparison examples
 import ComparisonHomeScreen from './src/screens/comparison/ComparisonHomeScreen';
+
+// Import cheatsheet
+import CheatSheetScreen from './src/screens/CheatSheetScreen';
 
 const Stack = createStackNavigator();
 
@@ -598,11 +608,45 @@ function App() {
             options={{ title: 'Patrones React Native' }}
           />
           
+          {/* Styling Section */}
+          <Stack.Screen 
+            name="StylingHome" 
+            component={StylingHomeScreen}
+            options={{ title: 'Estilos' }}
+          />
+          <Stack.Screen 
+            name="BasicStylesExample" 
+            component={BasicStylesExample}
+            options={{ title: 'Estilos Básicos' }}
+          />
+          <Stack.Screen 
+            name="LayoutStylesExample" 
+            component={LayoutStylesExample}
+            options={{ title: 'Layout y Posicionamiento' }}
+          />
+          <Stack.Screen 
+            name="ResponsiveStylesExample" 
+            component={ResponsiveStylesExample}
+            options={{ title: 'Diseño Responsivo' }}
+          />
+          <Stack.Screen 
+            name="ThemingStylesExample" 
+            component={ThemingStylesExample}
+            options={{ title: 'Temas y Contextos' }}
+          />
+          
           {/* Comparison Section */}
           <Stack.Screen 
             name="ComparisonHome" 
             component={ComparisonHomeScreen}
             options={{ title: 'Vue 3 vs React Native' }}
+          />
+          
+          {/* CheatSheet Section */}
+          <Stack.Screen 
+            name="CheatSheet" 
+            component={CheatSheetScreen}
+            options={{ title: 'React Native CheatSheet' }}
           />
           
         </Stack.Navigator>
