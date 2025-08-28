@@ -62,7 +62,7 @@ const UseCallbackExample = () => {
   }, []); // Función estable
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.section}>
           <Text style={styles.title}>useCallback Hook</Text>

@@ -16,7 +16,7 @@ const PlaceholderScreen: React.FC<PlaceholderScreenProps> = ({
   navigation 
 }) => {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <View style={styles.content}>
         <Text style={styles.icon}>{icon}</Text>
         <Text style={styles.title}>{title}</Text>

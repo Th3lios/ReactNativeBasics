@@ -21,7 +21,7 @@ const UseMemoExample = () => {
   // SIN useMemo - se ejecuta en cada render
   const expensiveValueWithoutMemo = expensiveCalculation(count);
 
-  // CON useMemo - solo se ejecuta cuando 'count' cambia
+  // CON useMemo - solo se ejecuta cuando 'count' cambia  
   const expensiveValueWithMemo = useMemo(() => {
     console.log('💾 Usando useMemo para el cálculo');
     return expensiveCalculation(count);
@@ -60,7 +60,7 @@ const UseMemoExample = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.section}>
           <Text style={styles.title}>useMemo Hook</Text>

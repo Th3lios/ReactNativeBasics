@@ -61,7 +61,7 @@ const CustomHooksExample = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.section}>
           <Text style={styles.title}>Custom Hooks</Text>

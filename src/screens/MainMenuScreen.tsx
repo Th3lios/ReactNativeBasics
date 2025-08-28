@@ -76,7 +76,7 @@ const MainMenuScreen = ({ navigation }: any) => {
     },
   ];
 
-  const renderSectionCard = (section: any, index: number) => (
+  const renderSectionCard = (section: any, _index: number) => (
     <Pressable
       key={section.id}
       style={[
@@ -122,7 +122,7 @@ const MainMenuScreen = ({ navigation }: any) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.appTitle}>React Native</Text>

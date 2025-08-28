@@ -44,7 +44,7 @@ const UseStateExample = () => {
   const colors = ['#007AFF', '#4caf50', '#f44336', '#ff9800', '#9c27b0'];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.section}>
           <Text style={styles.title}>useState Hook</Text>
